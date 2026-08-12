@@ -50,8 +50,7 @@ export default function ContactSection() {
             </h3>
 
             <p className="mt-4 max-w-xl leading-7 text-[#18392b]/60">
-              Pour l’instant, nous allons utiliser un bouton de contact simple.
-              On pourra ensuite ajouter un vrai formulaire directement sur le site.
+              
             </p>
 
             <div className="mt-9 flex flex-wrap gap-4">
