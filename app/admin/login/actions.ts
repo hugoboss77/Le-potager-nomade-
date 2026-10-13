@@ -19,7 +19,8 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/admin/login?error=auth&code=${encodeURIComponent(error.code ?? "unknown")}`);
+    console.error("Supabase admin login error:", { message: error.message, status: error.status, code: error.code });
+    redirect(`/admin/login?error=auth&code=${encodeURIComponent(error.code ?? "unknown")}&detail=${encodeURIComponent(error.message)}`);
   }
 
   redirect("/admin");
