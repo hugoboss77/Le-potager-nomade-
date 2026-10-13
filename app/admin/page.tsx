@@ -66,7 +66,8 @@ export default async function AdminPage() {
             Voir le site
           </a>
         </div>
-<div className="mt-10"><a href="/admin/shop" className="inline-flex rounded-full bg-[#d96b38] px-6 py-4 font-semibold text-white">Gérer l'épicerie fine →</a></div>\n<div className="mt-12 flex items-center justify-between">
+<div className="mt-10"><a href="/admin/shop" className="inline-flex rounded-full bg-[#d96b38] px-6 py-4 font-semibold text-white">Gérer l'épicerie fine →</a></div>
+<div className="mt-12 flex items-center justify-between">
   <h2 className="text-2xl font-semibold">
     Emplacements fixes
   </h2>
