@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   if([...qtyById.values()].some(q=>q>30)) return NextResponse.json({error:"Quantité trop élevée"},{status:400});
   const {data:products,error:productError}=await db.from("shop_products").select("id,title,price_cents").eq("region",region).eq("published",true).in("id",[...qtyById.keys()]);
   if(productError || !products || products.length!==qtyById.size) return NextResponse.json({error:"Produit indisponible"},{status:400});
-  const items=products.map(p=>({id:p.id,title:p.title,price_cents:p.price_cents,quantity:qtyById.get(p.id)}));
+  const items=products.map(p=>({id:p.id,title:p.title,price_cents:p.price_cents,quantity:qtyById.get(p.id)!}));
   const total=items.reduce((sum,p)=>sum+p.price_cents*p.quantity,0);
   if(total>200000) return NextResponse.json({error:"Montant trop élevé"},{status:400});
   const {data:order,error}=await db.from("shop_orders").insert({region,customer_name:name,phone,pickup_id:pickup.id,pickup_label:pickup.label,items,total_cents:total}).select("id").single();
