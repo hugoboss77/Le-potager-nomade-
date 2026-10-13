@@ -19,7 +19,7 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    redirect("/admin/login?error=invalid");
+    redirect(`/admin/login?error=auth&code=${encodeURIComponent(error.code ?? "unknown")}`);
   }
 
   redirect("/admin");
