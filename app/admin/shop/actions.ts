@@ -18,7 +18,14 @@ export async function saveProduct(form:FormData){
   if(!allowed.includes(photo.type)||photo.size>5*1024*1024)throw Error("Photo invalide : JPG, PNG, WebP ou GIF, 5 Mo maximum.");
   const ext:Record<string,string>={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"};
   const path=`${region}/${crypto.randomUUID()}.${ext[photo.type]}`;
-  const {error:uploadError}=await db.storage.from("shop-product-images").upload(path,photo,{contentType:photo.type,upsert:false});
+  let uploadError: {message:string}|null=null;
+  try {
+   const bytes=new Uint8Array(await photo.arrayBuffer());
+   const result=await db.storage.from("shop-product-images").upload(path,bytes,{contentType:photo.type,upsert:false});
+   uploadError=result.error;
+  } catch(e) {
+   throw Error("Connexion au stockage des photos impossible : "+(e instanceof Error?e.message:"Erreur réseau"));
+  }
   if(uploadError)throw Error("Import photo : "+uploadError.message);
   image_url=db.storage.from("shop-product-images").getPublicUrl(path).data.publicUrl;
  }
