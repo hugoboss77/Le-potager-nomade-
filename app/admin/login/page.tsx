@@ -3,6 +3,8 @@ import { login } from "./actions";
 type LoginPageProps = {
   searchParams: Promise<{
     error?: string;
+    code?: string;
+    detail?: string;
   }>;
 };
 
@@ -15,6 +17,10 @@ export default async function LoginPage({
 
   if (params.error === "invalid") {
     errorMessage = "Adresse e-mail ou mot de passe incorrect.";
+  }
+
+  if (params.error === "auth") {
+    errorMessage = `Connexion Supabase refusée : ${params.detail ?? "Erreur inconnue"} (code : ${params.code ?? "unknown"}).`;
   }
 
   if (params.error === "missing") {

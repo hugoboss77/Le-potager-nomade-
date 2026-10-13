@@ -91,7 +91,7 @@ export default function RegionPage({
         </div>
       </section>
 
-      {/* EMPLACEMENTS */}
+      <section className="bg-[#f4f0e6] px-6 pb-16 lg:px-12"><div className="mx-auto max-w-[1400px] rounded-[2rem] bg-[#d96b38] p-8 text-white lg:p-12"><p className="text-sm font-bold uppercase tracking-[.2em] text-white/70">Nouveau • Épicerie fine</p><h2 className="mt-4 text-4xl font-semibold">Nos produits à emporter</h2><p className="mt-4 max-w-xl text-white/80">Soupes, confitures et gourmandises à réserver en ligne et à retirer près de chez vous.</p><Link href={`/${code}/epicerie`} className="mt-7 inline-flex rounded-full bg-white px-6 py-3 font-semibold text-[#18392b]">Découvrir l'épicerie →</Link></div></section>\n      {/* EMPLACEMENTS */}
       <section className="bg-[#18392b] px-6 py-20 text-white lg:px-12 lg:py-28">
         <div className="mx-auto max-w-[1400px]">
 
