@@ -1,9 +1,12 @@
 "use client";
-import {useMemo,useState} from "react";
+import {useEffect,useMemo,useState} from "react";
 type Product={id:string;title:string;description:string;image_url:string|null;price_cents:number};
 type Pickup={id:string;label:string;details:string;hours?:string;appointment:boolean};
 export default function ShopFront({region,products,pickups}:{region:"77"|"38";products:Product[];pickups:Pickup[]}){
  const [cart,setCart]=useState<Record<string,number>>({});
+ const [cartNotice,setCartNotice]=useState("");
+ useEffect(()=>{if(!cartNotice)return;const timeout=setTimeout(()=>setCartNotice(""),2500);return ()=>clearTimeout(timeout);},[cartNotice]);
+ function addToCart(id:string,title:string){setCart(c=>({...c,[id]:(c[id]??0)+1}));setCartNotice(`${title} ajouté à votre panier ✓`);}
  const [pickup,setPickup]=useState(pickups[0]?.id??"");
  const [name,setName]=useState("");const [phone,setPhone]=useState("");
  const [sending,setSending]=useState(false);const [error,setError]=useState("");const [success,setSuccess]=useState("");
@@ -26,11 +29,12 @@ export default function ShopFront({region,products,pickups}:{region:"77"|"38";pr
  const input="w-full rounded-2xl border border-[#18392b]/15 bg-white px-4 py-3 outline-none focus:border-[#d96b38]";
  return <div className="mx-auto max-w-[1400px] px-6 py-14 lg:px-12">
   <div className="mb-12"><p className="text-xs font-bold uppercase tracking-[.25em] text-[#d96b38]">Le Potager Nomade • {region}</p><h1 className="mt-4 text-5xl font-semibold tracking-tight">Notre épicerie fine</h1><p className="mt-4 text-[#18392b]/65">Des produits gourmands à réserver et à récupérer près de chez vous.</p></div>
+  {cartNotice&&<div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl bg-[#18392b] px-5 py-4 text-center text-sm font-semibold text-white shadow-xl">{cartNotice}</div>}
   <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
    <div className="grid gap-5 sm:grid-cols-2">
     {products.map(p=><article key={p.id} className="overflow-hidden rounded-[2rem] bg-white">
       {p.image_url?<img src={p.image_url} alt={p.title} className="h-56 w-full object-cover"/>:<div className="flex h-56 items-center justify-center bg-[#e9e1d3] text-[#18392b]/45">Le Potager Nomade</div>}
-      <div className="p-6"><h2 className="text-2xl font-semibold">{p.title}</h2><p className="mt-3 whitespace-pre-wrap text-[#18392b]/65">{p.description}</p><div className="mt-6 flex items-center justify-between gap-3"><strong className="text-xl">{euros(p.price_cents)}</strong><button className="rounded-full bg-[#18392b] px-5 py-3 text-sm font-semibold text-white" onClick={()=>setCart(c=>({...c,[p.id]:(c[p.id]??0)+1}))}>+ Ajouter</button></div></div>
+      <div className="p-6"><h2 className="text-2xl font-semibold">{p.title}</h2><p className="mt-3 whitespace-pre-wrap text-[#18392b]/65">{p.description}</p><div className="mt-6 flex items-center justify-between gap-3"><strong className="text-xl">{euros(p.price_cents)}</strong><button className="rounded-full bg-[#18392b] px-5 py-3 text-sm font-semibold text-white" onClick={()=>addToCart(p.id,p.title)}>+ Ajouter</button></div></div>
     </article>)}
     {!products.length&&<p>Aucun produit disponible pour le moment.</p>}
    </div>
