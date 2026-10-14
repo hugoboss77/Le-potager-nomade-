@@ -21,7 +21,9 @@ export default function Header() {
             />
           </a>
 
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#18392b] lg:flex">
+          <nav className="hidden items-center gap-5 text-sm font-semibold text-[#18392b] lg:flex">
+            <a href="/epicerie" className="rounded-full bg-[#d96b38] px-5 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[#b95427]">🛍️ Épicerie fine</a>
+
             <a href="#carte" className="transition-opacity hover:opacity-50">
               La carte
             </a>
@@ -87,6 +89,7 @@ export default function Header() {
           <div className="flex h-[calc(100vh-110px)] flex-col justify-between overflow-y-auto px-6 pb-8 pt-4">
 
             <nav className="flex flex-col">
+              <a href="/epicerie" onClick={() => setMenuOpen(false)} className="mb-5 flex items-center justify-between rounded-2xl bg-[#d96b38] px-6 py-5 text-xl font-semibold text-white"><span>🛍️ Notre épicerie fine</span><span>→</span></a>
 
   <a
     href="#carte"
