@@ -35,6 +35,7 @@ export default function Hero() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
+              <a href="/epicerie" className="rounded-full bg-[#d96b38] px-7 py-4 font-semibold text-white transition-all hover:-translate-y-1 hover:bg-[#b95427]">🛍️ Découvrir notre épicerie fine →</a>
 
               <a
                 href="#emplacements"
