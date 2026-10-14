@@ -31,7 +31,48 @@ export async function POST(request: Request) {
   if(total>200000) return NextResponse.json({error:"Montant trop élevé"},{status:400});
   const {data:order,error}=await db.from("shop_orders").insert({region,customer_name:name,phone,pickup_id:pickup.id,pickup_label:pickup.label,items,total_cents:total}).select("id").single();
   if(error) throw error;
-  return NextResponse.json({id:order.id});
+  // A notification failure must never erase a successfully saved order.
+  let emailNotification = false;
+  const resendKey = process.env.RESEND_API_KEY;
+  const from = process.env.ORDER_NOTIFICATION_FROM;
+  if (resendKey && from) {
+   const euros = (cents: number) => (cents / 100).toLocaleString("fr-FR", {style:"currency",currency:"EUR"});
+   const message = [
+    "Nouvelle commande - Le Potager Nomade",
+    "Référence : " + order.id,
+    "Département : " + region,
+    "Client : " + name,
+    "Téléphone : " + phone,
+    "Retrait : " + pickup.label,
+    "",
+    "Produits :",
+    ...items.map(item => item.quantity + " x " + item.title + " - " + euros(item.quantity * item.price_cents)),
+    "",
+    "Total : " + euros(total),
+    "",
+    "Commande à confirmer auprès du client."
+   ].join("\n");
+   try {
+    const mail = await fetch("https://api.resend.com/emails", {
+     method:"POST",
+     headers:{"Authorization":"Bearer " + resendKey,"Content-Type":"application/json"},
+     body:JSON.stringify({
+      from,
+      to:["lepotagernomade.contact@gmail.com"],
+      subject:"Nouvelle commande épicerie " + region + " - " + name,
+      text:message
+     }),
+     signal:AbortSignal.timeout(8000)
+    });
+    emailNotification = mail.ok;
+    if (!mail.ok) console.error("Notification de commande refusée :", mail.status, await mail.text());
+   } catch (mailError) {
+    console.error("Notification de commande impossible :", mailError);
+   }
+  } else {
+   console.warn("Notification email non configurée : RESEND_API_KEY ou ORDER_NOTIFICATION_FROM manquant.");
+  }
+  return NextResponse.json({id:order.id,emailNotification});
  } catch {
   return NextResponse.json({error:"Impossible d'enregistrer la demande"},{status:500});
  }
